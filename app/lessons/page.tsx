@@ -54,7 +54,10 @@ export default function LessonsPage() {
     }
   }, []);
 
-  const isLessonCompleted = (unitNumber: number, lessonIndex: number) => {
+  const isLessonCompleted = (
+    unitNumber: number,
+    lessonIndex: number
+  ) => {
     const lessonId = `${unitNumber}-${lessonIndex + 1}`;
     return completedLessons.includes(lessonId);
   };
@@ -65,10 +68,11 @@ export default function LessonsPage() {
       className="min-h-screen bg-[#0b1020] px-4 py-8 text-white"
     >
       <div className="mx-auto max-w-4xl">
+
         {/* Header */}
         <div className="mb-10 text-center">
           <Link
-            href="/espanol-plus/"
+            href="/"
             className="mb-6 inline-block text-sm text-white/60 transition hover:text-white"
           >
             ← العودة إلى الرئيسية
@@ -86,10 +90,6 @@ export default function LessonsPage() {
         {/* Units */}
         <div className="space-y-6">
           {units.map((unit, unitIndex) => {
-            /*
-             * الوحدة الأولى مفتوحة.
-             * الوحدات التالية يمكن فتحها لاحقًا حسب تقدم المستخدم.
-             */
             const isLocked = unitIndex > 0;
 
             return (
@@ -97,9 +97,11 @@ export default function LessonsPage() {
                 key={unit.number}
                 className="overflow-hidden rounded-3xl border border-white/10 bg-white/[0.04] shadow-xl"
               >
+
                 {/* Unit Header */}
                 <div className="border-b border-white/10 p-6">
                   <div className="flex items-center justify-between gap-4">
+
                     <div>
                       <div className="mb-2 text-sm font-medium text-white/50">
                         الوحدة {unit.number}
@@ -117,25 +119,26 @@ export default function LessonsPage() {
                     <div className="flex h-12 w-12 shrink-0 items-center justify-center rounded-2xl bg-white/10 text-xl">
                       {isLocked ? "🔒" : "📚"}
                     </div>
+
                   </div>
                 </div>
 
                 {/* Lessons */}
                 <div className="divide-y divide-white/10">
+
                   {unit.lessons.map((lesson, index) => {
-                    /*
-                     * في الوحدة الحالية:
-                     * أول 3 دروس مفتوحة.
-                     * الدرس الرابع مقفول حتى إكمال التقدم المطلوب.
-                     */
+
                     const lessonLocked =
                       isLocked || (unitIndex === 0 && index > 2);
 
-                    const lessonId = `${unit.number}-${index + 1}`;
-                    const completed = isLessonCompleted(
-                      unit.number,
-                      index
-                    );
+                    const lessonId =
+                      `${unit.number}-${index + 1}`;
+
+                    const completed =
+                      isLessonCompleted(
+                        unit.number,
+                        index
+                      );
 
                     return (
                       <Link
@@ -143,7 +146,7 @@ export default function LessonsPage() {
                         href={
                           lessonLocked
                             ? "#"
-                            : `/espanol-plus/lessons/${lessonId}/`
+                            : `/lessons/${lessonId}/`
                         }
                         onClick={(event) => {
                           if (lessonLocked) {
@@ -156,7 +159,8 @@ export default function LessonsPage() {
                             : "hover:bg-white/[0.05]"
                         }`}
                       >
-                        {/* Lesson Number */}
+
+                        {/* Number */}
                         <div
                           className={`flex h-11 w-11 shrink-0 items-center justify-center rounded-xl text-sm font-bold ${
                             completed
@@ -188,9 +192,11 @@ export default function LessonsPage() {
                             ? "🔒"
                             : "→"}
                         </div>
+
                       </Link>
                     );
                   })}
+
                 </div>
               </section>
             );
@@ -203,6 +209,7 @@ export default function LessonsPage() {
             أكمل الدروس بالترتيب لفتح المزيد من المحتوى 🚀
           </p>
         </div>
+
       </div>
     </main>
   );
