@@ -364,7 +364,7 @@ const grammarTopics: GrammarTopic[] = [
   },
 ];
 
-export default function GrammarPage() {
+export default function GrammarPage({ id }: { id: string }) {
   const [selectedLevel, setSelectedLevel] = useState<Level>("A1");
   const [search, setSearch] = useState("");
   const [showCompleted, setShowCompleted] = useState(false);
