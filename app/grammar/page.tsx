@@ -434,4 +434,386 @@ export default function GrammarPage() {
         {/* Hero */}
         <section className="card overflow-hidden">
           <div className="relative p-5 sm:p-7">
-            <div className="absolute -left-10 -top-10 h-32 w-32 rounded-full bg-[var(--primary)]/
+            <div className="absolute -left-10 -top-10 h-32 w-32 rounded-full bg-[var(--primary)]/10 blur-2xl" />
+
+            <div className="relative">
+              <div className="mb-3 inline-flex items-center gap-2 rounded-full bg-[var(--primary)]/10 px-3 py-1.5 text-xs font-bold text-[var(--primary)]">
+                <BookOpen className="h-4 w-4" />
+                قواعد اللغة الإسبانية
+              </div>
+
+              <h1 className="text-2xl font-black tracking-tight text-[var(--text)] sm:text-3xl">
+                افهم القاعدة، ثم استخدمها
+              </h1>
+
+              <p className="mt-2 max-w-2xl text-sm leading-7 text-[var(--muted)]">
+                تعلم قواعد الإسبانية تدريجيًا من A1 حتى C1، مع أمثلة إسبانية
+                وترجمتها العربية وتمارين تطبيقية.
+              </p>
+
+              <div className="mt-6 grid grid-cols-2 gap-3 sm:grid-cols-4">
+                <div className="rounded-2xl bg-[var(--surface)] p-4">
+                  <div className="text-2xl font-black text-[var(--text)]">
+                    {grammarTopics.length}
+                  </div>
+                  <div className="mt-1 text-xs text-[var(--muted)]">
+                    موضوعًا
+                  </div>
+                </div>
+
+                <div className="rounded-2xl bg-[var(--surface)] p-4">
+                  <div className="text-2xl font-black text-[var(--text)]">
+                    5
+                  </div>
+                  <div className="mt-1 text-xs text-[var(--muted)]">
+                    مستويات
+                  </div>
+                </div>
+
+                <div className="rounded-2xl bg-[var(--surface)] p-4">
+                  <div className="text-2xl font-black text-[var(--text)]">
+                    {completedCount}
+                  </div>
+                  <div className="mt-1 text-xs text-[var(--muted)]">
+                    مكتمل
+                  </div>
+                </div>
+
+                <div className="rounded-2xl bg-[var(--surface)] p-4">
+                  <div className="text-2xl font-black text-[var(--primary)]">
+                    {totalProgress}%
+                  </div>
+                  <div className="mt-1 text-xs text-[var(--muted)]">
+                    تقدم {selectedLevel}
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        {/* Levels */}
+        <section>
+          <div className="mb-3 flex items-center justify-between">
+            <div>
+              <h2 className="text-lg font-extrabold text-[var(--text)]">
+                اختر مستواك
+              </h2>
+              <p className="mt-1 text-xs text-[var(--muted)]">
+                {levelInfo[selectedLevel].description}
+              </p>
+            </div>
+
+            <Trophy className="h-5 w-5 text-[var(--primary)]" />
+          </div>
+
+          <div className="grid grid-cols-5 gap-2">
+            {levels.map((level) => {
+              const active = selectedLevel === level;
+
+              return (
+                <button
+                  key={level}
+                  onClick={() => setSelectedLevel(level)}
+                  className={`rounded-2xl border px-2 py-3 text-center transition ${
+                    active
+                      ? "border-[var(--primary)] bg-[var(--primary)] text-white shadow-lg"
+                      : "border-[var(--border)] bg-[var(--surface)] text-[var(--text)] hover:border-[var(--primary)]/40"
+                  }`}
+                >
+                  <div className="text-sm font-black">{level}</div>
+                  <div
+                    className={`mt-1 hidden text-[10px] sm:block ${
+                      active ? "text-white/80" : "text-[var(--muted)]"
+                    }`}
+                  >
+                    {levelInfo[level].name}
+                  </div>
+                </button>
+              );
+            })}
+          </div>
+        </section>
+
+        {/* Search + filter */}
+        <section className="flex flex-col gap-3 sm:flex-row">
+          <div className="relative flex-1">
+            <Search className="absolute right-4 top-1/2 h-5 w-5 -translate-y-1/2 text-[var(--muted)]" />
+
+            <input
+              type="text"
+              value={search}
+              onChange={(e) => setSearch(e.target.value)}
+              placeholder="ابحث عن قاعدة أو مثال..."
+              className="h-12 w-full rounded-2xl border border-[var(--border)] bg-[var(--surface)] pr-12 pl-4 text-sm text-[var(--text)] outline-none transition placeholder:text-[var(--muted)] focus:border-[var(--primary)]"
+            />
+          </div>
+
+          <button
+            onClick={() => setShowCompleted((value) => !value)}
+            className={`flex h-12 items-center justify-center gap-2 rounded-2xl border px-5 text-sm font-bold transition ${
+              showCompleted
+                ? "border-[var(--primary)] bg-[var(--primary)] text-white"
+                : "border-[var(--border)] bg-[var(--surface)] text-[var(--text)]"
+            }`}
+          >
+            <Filter className="h-4 w-4" />
+            المكتملة فقط
+          </button>
+        </section>
+
+        {/* Level progress */}
+        <section className="card p-5">
+          <div className="flex items-center justify-between">
+            <div>
+              <div className="text-sm font-bold text-[var(--text)]">
+                تقدم مستوى {selectedLevel}
+              </div>
+              <div className="mt-1 text-xs text-[var(--muted)]">
+                {completedCount} من {currentTopics.length} موضوع مكتمل
+              </div>
+            </div>
+
+            <div className="text-xl font-black text-[var(--primary)]">
+              {totalProgress}%
+            </div>
+          </div>
+
+          <div className="progress-track mt-4">
+            <div
+              className="progress-value"
+              style={{ width: `${totalProgress}%` }}
+            />
+          </div>
+        </section>
+
+        {/* Topics */}
+        <section>
+          <div className="mb-4 flex items-center justify-between">
+            <h2 className="text-lg font-extrabold text-[var(--text)]">
+              قواعد {selectedLevel}
+            </h2>
+
+            <span className="text-xs font-bold text-[var(--muted)]">
+              {filteredTopics.length} موضوع
+            </span>
+          </div>
+
+          {filteredTopics.length === 0 ? (
+            <div className="card p-10 text-center">
+              <Search className="mx-auto h-10 w-10 text-[var(--muted)]" />
+
+              <h3 className="mt-4 font-bold text-[var(--text)]">
+                لم نجد ما تبحث عنه
+              </h3>
+
+              <p className="mt-2 text-sm text-[var(--muted)]">
+                جرّب كلمة أخرى أو ألغِ فلتر المكتملة.
+              </p>
+            </div>
+          ) : (
+            <div className="grid gap-4">
+              {filteredTopics.map((topic, index) => (
+                <div
+                  key={topic.id}
+                  className={`card overflow-hidden transition ${
+                    topic.locked
+                      ? "opacity-80"
+                      : "hover:-translate-y-0.5 hover:shadow-lg"
+                  }`}
+                >
+                  <div className="p-5">
+                    <div className="flex items-start gap-4">
+                      {/* Number */}
+                      <div
+                        className={`flex h-11 w-11 shrink-0 items-center justify-center rounded-2xl text-sm font-black ${
+                          topic.completed
+                            ? "bg-emerald-500/10 text-emerald-500"
+                            : topic.locked
+                            ? "bg-[var(--muted)]/10 text-[var(--muted)]"
+                            : "bg-[var(--primary)]/10 text-[var(--primary)]"
+                        }`}
+                      >
+                        {topic.completed ? (
+                          <CheckCircle2 className="h-5 w-5" />
+                        ) : topic.locked ? (
+                          <Lock className="h-5 w-5" />
+                        ) : (
+                          String(index + 1).padStart(2, "0")
+                        )}
+                      </div>
+
+                      <div className="min-w-0 flex-1">
+                        <div className="flex flex-wrap items-center gap-2">
+                          <h3 className="font-extrabold text-[var(--text)]">
+                            {topic.title}
+                          </h3>
+
+                          <span className="rounded-full bg-[var(--surface)] px-2.5 py-1 text-[10px] font-bold text-[var(--muted)]">
+                            {topic.category}
+                          </span>
+                        </div>
+
+                        <p className="mt-1 text-sm leading-6 text-[var(--muted)]">
+                          {topic.description}
+                        </p>
+
+                        {/* Example */}
+                        <div className="mt-4 rounded-2xl border border-[var(--border)] bg-[var(--surface)] p-4">
+                          <div
+                            dir="ltr"
+                            className="text-sm font-bold text-[var(--text)]"
+                          >
+                            {topic.example}
+                          </div>
+
+                          <div className="mt-1 text-xs text-[var(--muted)]">
+                            {topic.translation}
+                          </div>
+                        </div>
+
+                        {/* Meta */}
+                        <div className="mt-4 flex flex-wrap items-center gap-4 text-xs text-[var(--muted)]">
+                          <span className="flex items-center gap-1.5">
+                            <BookOpen className="h-4 w-4" />
+                            {topic.lessons} دروس
+                          </span>
+
+                          <span className="flex items-center gap-1.5">
+                            <Clock3 className="h-4 w-4" />
+                            {topic.duration}
+                          </span>
+
+                          {topic.completed && (
+                            <span className="flex items-center gap-1.5 text-emerald-500">
+                              <CheckCircle2 className="h-4 w-4" />
+                              مكتملة
+                            </span>
+                          )}
+                        </div>
+
+                        {/* Progress */}
+                        {!topic.locked && topic.progress > 0 && (
+                          <div className="mt-4">
+                            <div className="mb-1.5 flex justify-between text-[10px] font-bold text-[var(--muted)]">
+                              <span>التقدم</span>
+                              <span>{topic.progress}%</span>
+                            </div>
+
+                            <div className="progress-track">
+                              <div
+                                className="progress-value"
+                                style={{
+                                  width: `${topic.progress}%`,
+                                }}
+                              />
+                            </div>
+                          </div>
+                        )}
+                      </div>
+
+                      {/* Action */}
+                      <div className="hidden shrink-0 sm:block">
+                        {topic.locked ? (
+                          <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-[var(--surface)] text-[var(--muted)]">
+                            <Lock className="h-4 w-4" />
+                          </div>
+                        ) : (
+                          <Link
+                            href={`/grammar/${topic.id}`}
+                            className="flex h-10 w-10 items-center justify-center rounded-xl bg-[var(--primary)] text-white transition hover:scale-105"
+                          >
+                            <ChevronLeft className="h-5 w-5" />
+                          </Link>
+                        )}
+                      </div>
+                    </div>
+
+                    {/* Mobile action */}
+                    <div className="mt-4 sm:hidden">
+                      {topic.locked ? (
+                        <div className="flex h-11 items-center justify-center gap-2 rounded-xl bg-[var(--surface)] text-sm font-bold text-[var(--muted)]">
+                          <Lock className="h-4 w-4" />
+                          هذا الدرس مقفل
+                        </div>
+                      ) : (
+                        <Link
+                          href={`/grammar/${topic.id}`}
+                          className="btn-primary flex h-11 items-center justify-center gap-2"
+                        >
+                          {topic.progress > 0 ? "متابعة الدرس" : "ابدأ الدرس"}
+                          <ChevronLeft className="h-4 w-4" />
+                        </Link>
+                      )}
+                    </div>
+                  </div>
+                </div>
+              ))}
+            </div>
+          )}
+        </section>
+
+        {/* Grammar tip */}
+        <section className="card overflow-hidden">
+          <div className="p-5 sm:p-6">
+            <div className="flex items-start gap-4">
+              <div className="flex h-11 w-11 shrink-0 items-center justify-center rounded-2xl bg-amber-500/10 text-amber-500">
+                <Star className="h-5 w-5" />
+              </div>
+
+              <div>
+                <h3 className="font-extrabold text-[var(--text)]">
+                  نصيحة للتعلم
+                </h3>
+
+                <p className="mt-2 text-sm leading-7 text-[var(--muted)]">
+                  لا تحاول حفظ القاعدة وحدها. اقرأ المثال الإسباني بصوت
+                  مرتفع، ثم كوّن جملة جديدة من عندك باستخدام نفس القاعدة.
+                  بهذه الطريقة تتحول القاعدة من معلومة محفوظة إلى مهارة
+                  تستخدمها تلقائيًا.
+                </p>
+              </div>
+            </div>
+          </div>
+        </section>
+      </div>
+
+      {/* Mobile Navigation */}
+      <nav className="fixed bottom-0 left-0 right-0 z-50 border-t border-[var(--border)] bg-[var(--background)]/95 backdrop-blur-xl sm:hidden">
+        <div className="grid h-16 grid-cols-4">
+          <Link
+            href="/dashboard"
+            className="flex flex-col items-center justify-center gap-1 text-[var(--muted)]"
+          >
+            <BookOpen className="h-5 w-5" />
+            <span className="text-[10px] font-bold">الرئيسية</span>
+          </Link>
+
+          <Link
+            href="/lessons"
+            className="flex flex-col items-center justify-center gap-1 text-[var(--muted)]"
+          >
+            <BookOpen className="h-5 w-5" />
+            <span className="text-[10px] font-bold">الدروس</span>
+          </Link>
+
+          <Link
+            href="/vocabulary"
+            className="flex flex-col items-center justify-center gap-1 text-[var(--muted)]"
+          >
+            <Star className="h-5 w-5" />
+            <span className="text-[10px] font-bold">المفردات</span>
+          </Link>
+
+          <Link
+            href="/grammar"
+            className="flex flex-col items-center justify-center gap-1 text-[var(--primary)]"
+          >
+            <CheckCircle2 className="h-5 w-5" />
+            <span className="text-[10px] font-bold">القواعد</span>
+          </Link>
+        </div>
+      </nav>
+    </main>
+  );
+}
