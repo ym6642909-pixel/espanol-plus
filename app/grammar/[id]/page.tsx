@@ -1,4 +1,4 @@
-import GrammarLessonClient from "./GrammarLessonClient";
+import GrammarLessonClient from "../GrammarLessonClient";
 
 export function generateStaticParams() {
   return [
