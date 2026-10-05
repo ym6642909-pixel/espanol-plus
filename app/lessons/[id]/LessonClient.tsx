@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useMemo, useState } from "react";
 import Link from "next/link";
 
 import Navbar from "../../../components/navigation/Navbar";
@@ -11,8 +11,10 @@ import Badge from "../../../components/ui/Badge";
 import Button from "../../../components/ui/Button";
 import Card from "../../../components/ui/Card";
 import ProgressBar from "../../../components/ui/ProgressBar";
+import VocabularyCard from "../../../components/lessons/VocabularyCard";
 
 import type { Lesson } from "../../../data/lessons";
+import { vocabulary } from "../../../data/vocabulary";
 
 type LessonClientProps = {
   lesson: Lesson;
@@ -23,11 +25,19 @@ export default function LessonClient({
 }: LessonClientProps) {
   const [completed, setCompleted] = useState(false);
 
+  const lessonVocabulary = useMemo(
+    () =>
+      vocabulary.filter(
+        (item) => item.lessonId === lesson.id
+      ),
+    [lesson.id]
+  );
+
   return (
     <main className="min-h-screen bg-[#0b1020] text-white">
       <Navbar />
 
-      <section className="mx-auto max-w-4xl px-4 py-10 sm:px-6 sm:py-14">
+      <section className="mx-auto max-w-5xl px-4 py-10 sm:px-6 sm:py-14">
         {/* Back */}
         <Link
           href="/lessons/"
@@ -37,7 +47,7 @@ export default function LessonClient({
           العودة إلى الدروس
         </Link>
 
-        {/* Lesson Header */}
+        {/* Header */}
         <div className="mt-8">
           <Badge variant={completed ? "success" : "default"}>
             {completed ? "تم إكمال الدرس ✓" : "درس جديد"}
@@ -47,7 +57,7 @@ export default function LessonClient({
             {lesson.title}
           </h1>
 
-          <p className="mt-4 text-base leading-8 text-white/50">
+          <p className="mt-4 max-w-3xl text-base leading-8 text-white/50">
             {lesson.description}
           </p>
 
@@ -63,10 +73,14 @@ export default function LessonClient({
             <span className="rounded-full bg-white/5 px-3 py-2">
               🇪🇸 A1
             </span>
+
+            <span className="rounded-full bg-white/5 px-3 py-2">
+              🧠 {lessonVocabulary.length} مفردات
+            </span>
           </div>
         </div>
 
-        {/* Lesson Progress */}
+        {/* Progress */}
         <Card className="mt-8 p-5 sm:p-6">
           <div className="mb-3 flex items-center justify-between">
             <span className="text-sm text-white/40">
@@ -78,12 +92,10 @@ export default function LessonClient({
             </span>
           </div>
 
-          <ProgressBar
-            value={completed ? 100 : 0}
-          />
+          <ProgressBar value={completed ? 100 : 0} />
         </Card>
 
-        {/* Lesson Content */}
+        {/* Introduction */}
         <Card className="mt-6 p-6 sm:p-8">
           <div className="text-center">
             <div className="mx-auto flex h-20 w-20 items-center justify-center rounded-3xl bg-white/5 text-4xl">
@@ -95,55 +107,65 @@ export default function LessonClient({
             </h2>
 
             <p className="mx-auto mt-4 max-w-2xl text-sm leading-8 text-white/50">
-              هذا هو محتوى الدرس الأساسي. في الخطوات القادمة
-              سنضيف المفردات والشرح والأمثلة والتمارين التفاعلية
-              لكل درس.
+              ابدأ بتعلم الكلمات والتعبيرات الأساسية في هذا الدرس.
+              يمكنك الضغط على زر الصوت لسماع النطق الإسباني.
             </p>
           </div>
+        </Card>
 
-          {/* Temporary Lesson Structure */}
-          <div className="mt-8 grid gap-4 sm:grid-cols-3">
-            <div className="rounded-2xl border border-white/10 bg-white/[0.03] p-5 text-center">
-              <div className="text-2xl">📖</div>
-              <h3 className="mt-3 font-semibold">
-                الشرح
-              </h3>
-              <p className="mt-2 text-xs leading-6 text-white/40">
-                شرح مبسط للدرس.
-              </p>
-            </div>
+        {/* Vocabulary */}
+        <section className="mt-8">
+          <div className="mb-5">
+            <p className="text-sm text-white/40">
+              مفردات الدرس
+            </p>
 
-            <div className="rounded-2xl border border-white/10 bg-white/[0.03] p-5 text-center">
-              <div className="text-2xl">🧠</div>
-              <h3 className="mt-3 font-semibold">
-                المفردات
-              </h3>
-              <p className="mt-2 text-xs leading-6 text-white/40">
-                أهم الكلمات والتعبيرات.
-              </p>
-            </div>
-
-            <div className="rounded-2xl border border-white/10 bg-white/[0.03] p-5 text-center">
-              <div className="text-2xl">✏️</div>
-              <h3 className="mt-3 font-semibold">
-                التدريب
-              </h3>
-              <p className="mt-2 text-xs leading-6 text-white/40">
-                اختبر فهمك من خلال التمارين.
-              </p>
-            </div>
+            <h2 className="mt-1 text-2xl font-bold">
+              الكلمات الأساسية
+            </h2>
           </div>
 
-          {/* Complete Button */}
-          <div className="mt-8 border-t border-white/10 pt-6">
-            <Button
-              onClick={() => setCompleted(true)}
-              className="w-full"
-            >
-              {completed
-                ? "تم إكمال الدرس ✓"
-                : "إكمال الدرس"}
-            </Button>
+          {lessonVocabulary.length > 0 ? (
+            <div className="grid gap-4 sm:grid-cols-2">
+              {lessonVocabulary.map((item) => (
+                <VocabularyCard
+                  key={item.id}
+                  item={item}
+                />
+              ))}
+            </div>
+          ) : (
+            <Card className="p-6 text-center">
+              <p className="text-sm text-white/40">
+                لا توجد مفردات مضافة لهذا الدرس حتى الآن.
+              </p>
+            </Card>
+          )}
+        </section>
+
+        {/* Complete */}
+        <Card className="mt-8 p-6 sm:p-8">
+          <div className="text-center">
+            <h2 className="text-xl font-bold">
+              هل انتهيت من الدرس؟
+            </h2>
+
+            <p className="mt-2 text-sm leading-7 text-white/40">
+              بعد دراسة المفردات ومراجعة الأمثلة، يمكنك تسجيل
+              الدرس كمكتمل.
+            </p>
+
+            <div className="mt-6">
+              <Button
+                onClick={() => setCompleted(true)}
+                disabled={completed}
+                className="w-full sm:w-auto"
+              >
+                {completed
+                  ? "تم إكمال الدرس ✓"
+                  : "إكمال الدرس"}
+              </Button>
+            </div>
           </div>
         </Card>
       </section>
