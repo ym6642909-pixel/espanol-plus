@@ -1,0 +1,142 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>اسأل قلبك 💛</title>
+<link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@400;500;700;800&display=swap" rel="stylesheet">
+<style>
+:root{--ink:#f4eefc;--muted:#b8a9d4;--a1:#ff7eb6;--a2:#8b7bff;--glass:rgba(255,255,255,.08)}
+*{box-sizing:border-box}
+body{margin:0;min-height:100vh;display:flex;align-items:center;justify-content:center;padding:16px;
+font-family:'Tajawal',Tahoma,sans-serif;color:var(--ink);overflow-x:hidden;
+background:radial-gradient(circle at 20% 15%,#3b2a73 0,transparent 45%),radial-gradient(circle at 85% 85%,#6b2a63 0,transparent 45%),#120d26}
+body::before{content:"";position:fixed;inset:0;pointer-events:none;opacity:.7;
+background-image:radial-gradient(1.5px 1.5px at 20px 30px,#fff,transparent),radial-gradient(1px 1px at 90px 120px,#fff,transparent),radial-gradient(1.5px 1.5px at 160px 60px,#ffd9ec,transparent),radial-gradient(1px 1px at 230px 170px,#fff,transparent);
+background-size:260px 200px;animation:tw 4s ease-in-out infinite alternate}
+@keyframes tw{from{opacity:.35}to{opacity:.85}}
+.card{position:relative;max-width:480px;width:100%;border-radius:28px;padding:30px 22px;text-align:center;
+background:var(--glass);border:1px solid rgba(255,255,255,.16);backdrop-filter:blur(18px);-webkit-backdrop-filter:blur(18px);
+box-shadow:0 20px 60px rgba(0,0,0,.45),0 0 80px rgba(139,123,255,.18);animation:in .6s ease}
+@keyframes in{from{opacity:0;transform:translateY(16px) scale(.98)}to{opacity:1;transform:none}}
+h1{margin:6px 0 10px;font-size:27px;font-weight:800;background:linear-gradient(90deg,var(--a1),var(--a2));-webkit-background-clip:text;background-clip:text;color:transparent}
+p{line-height:1.9;margin:8px 0;color:#e6dcf7}
+.emoji{font-size:56px;filter:drop-shadow(0 0 16px rgba(255,126,182,.6))}
+button{font-family:inherit;cursor:pointer;border:0;border-radius:16px;font-size:17px;padding:13px 18px;transition:.25s}
+.main{background:linear-gradient(90deg,var(--a1),var(--a2));color:#fff;font-weight:700;margin-top:14px;width:100%;box-shadow:0 8px 24px rgba(139,123,255,.4)}
+.main:hover{transform:translateY(-2px) scale(1.02)}
+.opt{display:block;width:100%;background:rgba(255,255,255,.07);color:var(--ink);margin:10px 0;text-align:right;border:1px solid rgba(255,255,255,.14)}
+.opt:hover{background:rgba(255,126,182,.18);border-color:var(--a1);transform:translateX(-4px)}
+.bar{height:6px;background:rgba(255,255,255,.12);border-radius:8px;overflow:hidden;margin-bottom:18px}
+.bar i{display:block;height:100%;background:linear-gradient(90deg,var(--a1),var(--a2));width:0;transition:width .4s}
+.q{font-size:20px;font-weight:700;margin:6px 0 12px;line-height:1.7}
+.ghost{background:transparent;color:var(--muted);font-size:15px;margin-top:6px;width:100%}
+.ghost:hover{color:#fff}
+small{color:var(--muted)}
+</style>
+</head>
+<body>
+<div class="card" id="app"></div>
+
+<script>
+/* ====== إعدادات: عدّلها قبل النشر ====== */
+const FORM_URL = "https://formspree.io/f/xgaoyero"; // رابط الفورم من Formspree
+/* ======================================= */
+
+const questions = [
+  {q:"إلا كان عندك مشكل ولا نهار خايب، شكون أول واحد كتحبي تحكي ليه؟",
+   a:["واحد من العائلة", "صاحبة قريبة", "الشخص اللي كنحب", "خاصني نبقى مع راسي شوية"], k:[2]},
+  {q:"إلا غادي تسافري رحلة زوينة، شكون كتحبي يكون معاك؟",
+   a:["مجموعة كبيرة د الصحاب", "ختي ولا صاحبتي", "الشخص اللي كنحب", "نسافر وحدي ونستمتع"], k:[2]},
+  {q:"شنو أكثر صفة كتعجبك فالشخص اللي كتحبي؟",
+   a:["الضحك وخفة الدم", "الاهتمام والسؤال عليا", "الأمان والثقة", "الصراحة"], k:[1, 2]},
+  {q:"ملي كتشوفي ميساج منو فالتيليفون، شنو كتحسي؟",
+   a:["عادي بزاف", "كنفرح وكنجاوب بسرعة", "كنتأخر فالجواب شوية 😅", "على حسب المزاج"], k:[1, 2]},
+  {q:"إلا قضيتي نهار كامل مع الشخص اللي كتحبي، شنو غادي تحسي؟",
+   a:["الوقت غادي يدوز عادي", "غادي نكون فرحانة ونضحك بزاف", "غادي نحس بالأمان والراحة", "غادي نتوتر شوية 😅"], k:[1, 2, 3]},
+  {q:"ملي كتسمعي صوتو، شنو كتحسي؟",
+   a:["عادي", "كنبتسم بلا ما نحس", "كنهدى وكنرتاح", "كنتلخبط شوية"], k:[1, 2, 3]},
+  {q:"إلا غاب شي جوج أيام وما سولش عليك، شنو غادي دير؟",
+   a:["ما غاديش ناخد بالي", "غادي نلاحظ غيابو", "غادي يوحشني ونفكر نسول عليه", "غادي نتقلق شوية"], k:[2, 3]},
+  {q:"فأي وقت كتفكري فيه أكثر؟",
+   a:["نادرا", "ملي كنشوف شي حاجة كتضحك", "فبزاف د الأوقات فالنهار", "قبل ما نعس"], k:[2, 3]},
+  {q:"إلا وقعات ليك شي حاجة زوينة، شكون كتحبي تعلمي أول واحد؟",
+   a:["العائلة", "صاحبتي", "الشخص اللي كنحب", "حتى واحد"], k:[2]},
+  {q:"ملي كتشوفيه وسط بزاف د الناس، شنو كتحسي؟",
+   a:["عادي", "فرحانة بلي هو إجتماعي", "كنحب نكون قريبة منو", "كنغار شوية 😅"], k:[2, 3]},
+  {q:"إلا كان عندك جوج تذاكر د حفلة، شكون غادي تاخدي معاك؟",
+   a:["صاحبتي", "ختي", "الشخص اللي كنحب", "غادي نمشي وحدي"], k:[2]},
+  {q:"أشمن هدية كتحبي تاخدي منو؟",
+   a:["أي حاجة بسيطة", "رسالة زوينة بخط يدو", "شي حاجة تفكرني فيه ديما", "ما خاصني حتى هدية"], k:[1, 2]},
+  {q:"إلا احتاجتي مساعدة فالليل، شكون غادي تعيطي ليه؟",
+   a:["العائلة", "صاحبتي", "الشخص اللي كنحب", "غادي نتدبر وحدي"], k:[2]},
+  {q:"ملي كتهضري معاه، كيفاش كيدوز الوقت؟",
+   a:["عادي", "بسرعة وكننسى راسي", "بشوية", "على حسب الموضوع"], k:[1]},
+  {q:"واش كتحبي تعرفي أخبارو وتفاصيل نهارو؟",
+   a:["ماشي مهتمة", "شوية", "إيه كنحب", "بزاف"], k:[2, 3]},
+  {q:"إلا قرر يسافر بعيد، شنو غادي تحسي؟",
+   a:["عادي", "غربة ولكن غادي ندعمو", "غادي نحزن بزاف", "غادي نطلب منو يبقى قريب"], k:[2, 3]},
+  {q:"شنو أكثر حاجة كتحسسك بالأمان معاه؟",
+   a:["هضرتو", "وجودو حدايا", "اهتمامو بالتفاصيل", "ما كنحسش بأمان خاص"], k:[0, 1, 2]},
+  {q:"إلا قال ليك \"وحشتيني\"، شنو غادي دير؟",
+   a:["غادي نتفاجأ", "غادي نبتسم", "غادي نقول ليه وانت كذلك", "ما عرفتش كيفاش نجاوب"], k:[1, 2, 3]},
+  {q:"إلا تطورات العلاقة لشي حاجة أعمق، كيفاش غادي تفكري؟",
+   a:["ماشي واجدة", "خاصني الوقت", "ما غاديش نرفض الفكرة", "ممكن بزاف"], k:[2, 3]},
+  {q:"أشمن جملة كتوصف علاقتكم أكثر؟",
+   a:["علاقة عادية", "علاقة قريبة", "أكثر من صداقة بشوية", "خاصني الوقت باش نفكر"], k:[2, 3]}
+];
+
+const app = document.getElementById('app');
+let i = 0, answers = [];
+
+function show(){
+  const q = questions[i];
+  app.innerHTML = `
+    <div class="bar"><i style="width:${(i/questions.length)*100}%"></i></div>
+    <small>السؤال ${i+1} من ${questions.length}</small>
+    <div class="q">${q.q}</div>
+    ${q.a.map((t,k)=>`<button class="opt" onclick="pick(${k})">${t}</button>`).join("")}`;
+}
+
+function pick(k){
+  const q = questions[i];
+  answers.push({q:q.q, a:q.a[k], k:k});
+  i++;
+  i < questions.length ? show() : result();
+}
+
+function score(){
+  return answers.filter((x,n)=>questions[n].k.includes(x.k)).length;
+}
+
+function result(){
+  const s = score();
+  const msg = s>=14 ? ["🌟","علاقتكم متميزة بزاف","باين بلي كاين شي واحد قريب منك بزاف، ووجودو كيفرق معاك."]
+            : s>=8 ? ["🌷","علاقة دافية وقريبة","كاينين ناس كتحسي معاهم بالأمان والراحة، وهادشي زوين."]
+            :        ["🍃","علاقة هادئة","العلاقات الزوينة كتكبر مع الوقت، وما كاين حتى استعجال."];
+  app.innerHTML = `
+    <div class="emoji">${msg[0]}</div>
+    <h1>${msg[1]}</h1>
+    <p>${msg[2]}</p>
+    <hr style="border:0;border-top:1px dashed rgba(255,255,255,.25);margin:18px 0">
+    <p id="status"><small>جاري إرسال أجوبتك...</small></p>`;
+  send(s);
+}
+
+async function send(sc){
+  const text = answers.map((x,n)=>`${n+1}) ${x.q}\n← ${x.a}`).join("\n\n");
+  const st = document.getElementById('status');
+  try{
+    const r = await fetch(FORM_URL,{method:"POST",
+      headers:{"Content-Type":"application/json","Accept":"application/json"},
+      body:JSON.stringify({subject:"أجوبة اختبار اسأل قلبك",score:sc+" / "+questions.length,message:text})});
+    st.innerHTML = r.ok ? "الأجوبة ديالك تصيفطات ليه 💌 شكرا حيت جاوبتي بصراحة." : "<small>وقعات شي مشكلة فالإرسال، عاودي مرة أخرى من بعد.</small>";
+  }catch(e){
+    st.innerHTML = "<small>وقعات شي مشكلة فالإرسال، عاودي مرة أخرى من بعد.</small>";
+  }
+}
+
+show();
+</script>
+</body>
+</html>
