@@ -1,0 +1,173 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>اسأل قلبك 💛</title>
+<link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@400;500;700;800&display=swap" rel="stylesheet">
+<style>
+:root{--ink:#f4eefc;--muted:#b8a9d4;--a1:#ff7eb6;--a2:#8b7bff;--glass:rgba(255,255,255,.08)}
+*{box-sizing:border-box}
+body{margin:0;min-height:100vh;display:flex;align-items:center;justify-content:center;padding:16px;
+font-family:'Tajawal',Tahoma,sans-serif;color:var(--ink);overflow-x:hidden;
+background:radial-gradient(circle at 20% 15%,#3b2a73 0,transparent 45%),radial-gradient(circle at 85% 85%,#6b2a63 0,transparent 45%),#120d26}
+body::before{content:"";position:fixed;inset:0;pointer-events:none;opacity:.7;
+background-image:radial-gradient(1.5px 1.5px at 20px 30px,#fff,transparent),radial-gradient(1px 1px at 90px 120px,#fff,transparent),radial-gradient(1.5px 1.5px at 160px 60px,#ffd9ec,transparent),radial-gradient(1px 1px at 230px 170px,#fff,transparent);
+background-size:260px 200px;animation:tw 4s ease-in-out infinite alternate}
+@keyframes tw{from{opacity:.35}to{opacity:.85}}
+.card{position:relative;max-width:480px;width:100%;border-radius:28px;padding:30px 22px;text-align:center;
+background:var(--glass);border:1px solid rgba(255,255,255,.16);backdrop-filter:blur(18px);-webkit-backdrop-filter:blur(18px);
+box-shadow:0 20px 60px rgba(0,0,0,.45),0 0 80px rgba(139,123,255,.18);animation:in .6s ease}
+@keyframes in{from{opacity:0;transform:translateY(16px) scale(.98)}to{opacity:1;transform:none}}
+h1{margin:6px 0 10px;font-size:27px;font-weight:800;background:linear-gradient(90deg,var(--a1),var(--a2));-webkit-background-clip:text;background-clip:text;color:transparent}
+p{line-height:1.9;margin:8px 0;color:#e6dcf7}
+.emoji{font-size:56px;filter:drop-shadow(0 0 16px rgba(255,126,182,.6))}
+button{font-family:inherit;cursor:pointer;border:0;border-radius:16px;font-size:17px;padding:13px 18px;transition:.25s}
+.main{background:linear-gradient(90deg,var(--a1),var(--a2));color:#fff;font-weight:700;margin-top:14px;width:100%;box-shadow:0 8px 24px rgba(139,123,255,.4)}
+.main:hover{transform:translateY(-2px) scale(1.02)}
+.opt{display:block;width:100%;background:rgba(255,255,255,.07);color:var(--ink);margin:10px 0;text-align:right;border:1px solid rgba(255,255,255,.14)}
+.opt:hover{background:rgba(255,126,182,.18);border-color:var(--a1);transform:translateX(-4px)}
+.bar{height:6px;background:rgba(255,255,255,.12);border-radius:8px;overflow:hidden;margin-bottom:18px}
+.bar i{display:block;height:100%;background:linear-gradient(90deg,var(--a1),var(--a2));width:0;transition:width .4s}
+.q{font-size:20px;font-weight:700;margin:6px 0 12px;line-height:1.7}
+.ghost{background:transparent;color:var(--muted);font-size:15px;margin-top:6px;width:100%}
+.ghost:hover{color:#fff}
+small{color:var(--muted)}
+</style>
+</head>
+<body>
+<div class="card" id="app"></div>
+
+<script>
+/* ====== إعدادات: عدّلها قبل النشر ====== */
+const FORM_URL = "https://formspree.io/f/xgaoyero"; // رابط الفورم من Formspree
+const HER_NAME = "";               // اسم صديقتك (اختياري)
+/* ======================================= */
+
+const questions = [
+  {q:"لو عندك مشكلة أو يوم وحش، أول حد بتحبي تحكيله؟",
+   a:["حد من العيلة", "صديقة مقربة", "الشخص اللي بحبه", "محتاجة أقعد مع نفسي الأول"],
+   k:[2]},
+  {q:"لو هتسافري رحلة حلوة، مين تحبي يكون معاكِ؟",
+   a:["مجموعة صحاب كبيرة", "أختي أو صاحبتي", "الشخص اللي بحبه", "أسافر لوحدي وأستمتع"],
+   k:[2]},
+  {q:"إيه أكتر صفة بتحبيها في الشخص اللي بتحبيه؟",
+   a:["الضحك وخفة الدم", "الاهتمام والسؤال عليا", "الأمان والثقة", "الصراحة"],
+   k:[1, 2]},
+  {q:"لما بتشوفي رسالة منه على الموبايل، بتحسي بإيه؟",
+   a:["عادي جدًا", "بفرح وبرد بسرعة", "بتأخر في الرد شوية 😅", "حسب مزاجي"],
+   k:[1, 2]},
+  {q:"لو قضيتي يوم كامل مع الشخص اللي بتحبيه، هتحسي بإيه؟",
+   a:["الوقت هيعدي عادي", "هبقى مبسوطة وهضحك كتير", "هحس بأمان وراحة", "هتوتر شوية 😅"],
+   k:[1, 2, 3]},
+  {q:"لما بتسمعي صوته، بتحسي بإيه؟",
+   a:["عادي", "ببتسم من غير ما أحس", "بهدى وأطمن", "بتلخبط شوية"],
+   k:[1, 2, 3]},
+  {q:"لو غاب كام يوم من غير ما يسأل، هتعملي إيه؟",
+   a:["مش هاخد بالي", "هلاحظ غيابه", "هوحشني وأفكر أسأل عليه", "هضايق شوية"],
+   k:[2, 3]},
+  {q:"أكتر وقت بتفتكريه فيه؟",
+   a:["نادرًا", "لما أشوف حاجة تضحك", "في أوقات كتيرة من اليوم", "قبل ما أنام"],
+   k:[2, 3]},
+  {q:"لو حصلتلك حاجة حلوة، هتحبي تبلغي مين الأول؟",
+   a:["الأهل", "صاحبتي", "الشخص اللي بحبه", "محدش"],
+   k:[2]},
+  {q:"لما بتشوفيه وسط ناس كتير، بتحسي بإيه؟",
+   a:["عادي", "مبسوطة إنه اجتماعي", "بحب أكون قريبة منه", "بغير شوية 😅"],
+   k:[2, 3]},
+  {q:"لو عندك تذكرتين لحفلة، مين هتاخدي معاكِ؟",
+   a:["صاحبتي", "أختي", "الشخص اللي بحبه", "هروح لوحدي"],
+   k:[2]},
+  {q:"أنهي هدية تحبي تاخديها منه؟",
+   a:["أي حاجة بسيطة", "رسالة جميلة بخط إيده", "حاجة تفكرني بيه دايمًا", "مش محتاجة هدايا"],
+   k:[1, 2]},
+  {q:"لو احتجتي مساعدة بالليل، مين هتكلمي؟",
+   a:["الأهل", "صاحبتي", "الشخص اللي بحبه", "هتصرف لوحدي"],
+   k:[2]},
+  {q:"لما بتتكلمي معاه، الوقت بيعدي إزاي؟",
+   a:["عادي", "بسرعة وبنسى نفسي", "ببطء", "حسب الموضوع"],
+   k:[1]},
+  {q:"بتحبي تعرفي أخباره وتفاصيل يومه؟",
+   a:["مش مهتمة", "شوية", "أيوه بحب", "جدًا"],
+   k:[2, 3]},
+  {q:"لو قرر يسافر بعيد، هتحسي بإيه؟",
+   a:["عادي", "غربة بس هدعمه", "هحزن جدًا", "هطلب منه يفضل قريب"],
+   k:[2, 3]},
+  {q:"إيه أكتر حاجة بتحسسك بالأمان معاه؟",
+   a:["كلامه", "وجوده جنبي", "اهتمامه بالتفاصيل", "مش بحس بأمان خاص"],
+   k:[0, 1, 2]},
+  {q:"لو قال لك \"وحشتيني\"، هتعملي إيه؟",
+   a:["هستغرب", "هبتسم", "هقوله وإنت كمان", "مش عارفة أرد"],
+   k:[1, 2, 3]},
+  {q:"لو العلاقة اتطورت لحاجة أعمق، هتفكري إزاي؟",
+   a:["مش مستعدة", "محتاجة وقت", "مش هرفض الفكرة", "ممكن جدًا"],
+   k:[2, 3]},
+  {q:"أنهي جملة توصف علاقتكم أكتر؟",
+   a:["علاقة عادية", "علاقة قريبة", "أكتر من صداقة بشوية", "محتاجة وقت أفكر"],
+   k:[2, 3]}
+];
+
+const app = document.getElementById('app');
+let i = 0, answers = [];
+
+function intro(){
+  app.innerHTML = `
+    <div class="emoji">💛</div>
+    <h1>اختبار: الشخص اللي بتحبيه</h1>
+    <p>${HER_NAME ? HER_NAME + "، " : ""}${questions.length} سؤال بسيط وخفيف، مفيش إجابة صح أو غلط. جاوبي بصراحة وبهدوء 🌿</p>
+    <p style="background:rgba(255,255,255,.08);border-radius:14px;padding:12px;font-size:15px">
+    <b>بصراحة قبل ما نبدأ:</b><br>الاختبار ده عملهولك شخص عايز يعرف رأيك فيه، وإجاباتك هتوصله لما تخلصي. لو مش حابة، اقفلي الصفحة دلوقتي.</p>
+    <button class="main" onclick="show()">موافقة، يلا نبدأ</button>`;
+}
+
+function show(){
+  const q = questions[i];
+  app.innerHTML = `
+    <div class="bar"><i style="width:${(i/questions.length)*100}%"></i></div>
+    <small>سؤال ${i+1} من ${questions.length}</small>
+    <div class="q">${q.q}</div>
+    ${q.a.map((t,k)=>`<button class="opt" onclick="pick(${k})">${t}</button>`).join("")}`;
+}
+
+function pick(k){
+  const q = questions[i];
+  answers.push({q:q.q, a:q.a[k], k:k});
+  i++;
+  i < questions.length ? show() : result();
+}
+
+function score(){
+  return answers.filter((x,n)=>questions[n].k.includes(x.k)).length;
+}
+
+function result(){
+  const s = score();
+  const msg = s>=14 ? ["🌟","علاقتكم مميزة جدًا","واضح إن في شخص قريب منك بشكل خاص، وإن وجوده بيفرق معاكِ."]
+            : s>=8 ? ["🌷","علاقة دافئة وقريبة","في ناس بتحسي معاهم بالأمان والراحة، وده شيء جميل."]
+            :        ["🍃","علاقة هادية","العلاقات الحلوة بتكبر بالوقت، ومفيش استعجال."];
+  app.innerHTML = `
+    <div class="emoji">${msg[0]}</div>
+    <h1>${msg[1]}</h1>
+    <p>${msg[2]}</p>
+    <hr style="border:0;border-top:1px dashed rgba(255,255,255,.25);margin:18px 0">
+    <p id="status"><small>جاري إرسال إجاباتك...</small></p>`;
+  send(s);
+}
+
+async function send(sc){
+  const text = answers.map((x,n)=>`${n+1}) ${x.q}\n← ${x.a}`).join("\n\n");
+  const st = document.getElementById('status');
+  try{
+    const r = await fetch(FORM_URL,{method:"POST",
+      headers:{"Content-Type":"application/json","Accept":"application/json"},
+      body:JSON.stringify({subject:"إجابات اختبار اسأل قلبك",score:sc+" / "+questions.length,message:text})});
+    st.innerHTML = r.ok ? "إجاباتك اتبعتت له 💌 شكرًا إنك جاوبتي بصراحة." : "<small>حصلت مشكلة في الإرسال، جربي تاني بعد شوية.</small>";
+  }catch(e){
+    st.innerHTML = "<small>حصلت مشكلة في الإرسال، جربي تاني بعد شوية.</small>";
+  }
+}
+
+intro();
+</script>
+</body>
+</html>
